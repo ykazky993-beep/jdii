@@ -896,7 +896,7 @@ def main():
     total_requests = sum(t.requests_sent for t in all_threads)
     elapsed = int(time.time() - start_time)
     
-    print(f"\n\n{HIJAU}════════════════════════════════════════════════════════════════{RESET}")
+    print(f"\n\n{green}════════════════════════════════════════════════════════════════{RESET}")
     print(f"{GREEN}[✓] ATTACK DONE!{RESET}")
     print(f"{GREEN}    Total requests: {total_requests:,}{RESET}")
     print(f"{GREEN}    Duration: {elapsed} detik{RESET}")
