@@ -778,12 +778,12 @@ def main():
     print(f"\n{CYAN}╔══════════════════════════════════════════════════════════════════════════════╗{RESET}")
     print(f"{CYAN}║                                    SUMMARY                                   ║{RESET}")
     print(f"{CYAN}╠══════════════════════════════════════════════════════════════════════════════╣{RESET}")
-    print(f"{CYAN}║{RESET} {YELLOW}Target    {RESET}➜ {HIJAU}{target}:{port}{RESET}                                                 {CYAN}║{RESET}")
-    print(f"{CYAN}║{RESET} {YELLOW}Mode      {RESET}➜ {HIJAU}{mode}{RESET}                                                    {CYAN}║{RESET}")
-    print(f"{CYAN}║{RESET} {YELLOW}Threads   {RESET}➜ {HIJAU}{threads}{RESET}                                                    {CYAN}║{RESET}")
-    print(f"{CYAN}║{RESET} {YELLOW}Duration  {RESET}➜ {HIJAU}{duration} detik{RESET}                                                {CYAN}║{RESET}")
-    print(f"{CYAN}║{RESET} {YELLOW}Rate      {RESET}➜ {HIJAU}{rate if rate > 0 else 'Unlimited'}{RESET}                                                {CYAN}║{RESET}")
-    print(f"{CYAN}║{RESET} {YELLOW}SSL       {RESET}➜ {HIJAU}{'Ya' if use_ssl else 'Tidak'}{RESET}                                                   {CYAN}║{RESET}")
+    print(f"{CYAN}║{RESET} {YELLOW}Target    {RESET}➜ {GREEN}{target}:{port}{RESET}                                                 {CYAN}║{RESET}")
+    print(f"{CYAN}║{RESET} {YELLOW}Mode      {RESET}➜ {GREEN}{mode}{RESET}                                                    {CYAN}║{RESET}")
+    print(f"{CYAN}║{RESET} {YELLOW}Threads   {RESET}➜ {GREEN}{threads}{RESET}                                                    {CYAN}║{RESET}")
+    print(f"{CYAN}║{RESET} {YELLOW}Duration  {RESET}➜ {GREEN}{duration} detik{RESET}                                                {CYAN}║{RESET}")
+    print(f"{CYAN}║{RESET} {YELLOW}Rate      {RESET}➜ {GREEN}{rate if rate > 0 else 'Unlimited'}{RESET}                                                {CYAN}║{RESET}")
+    print(f"{CYAN}║{RESET} {YELLOW}SSL       {RESET}➜ {GREEN}{'Ya' if use_ssl else 'no'}{RESET}                                                   {CYAN}║{RESET}")
     print(f"{CYAN}╚══════════════════════════════════════════════════════════════════════════════╝{RESET}")
     
     # confirm
