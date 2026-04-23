@@ -48,7 +48,8 @@ from datetime import datetime, timedelta
 
 os.system("clear")
 print(b)
-
+time.sleep(2)
+os.system("clear")
 # ========== SLOW PRINT ==========
 def slow_print(text, delay=0.0001):
     for char in text:
