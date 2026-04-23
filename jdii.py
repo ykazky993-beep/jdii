@@ -45,7 +45,6 @@ import ssl
 import ipaddress
 import getpass
 from datetime import datetime, timedelta
-from login_system import login_register_loop
 
 os.system("clear")
 print(b)
@@ -759,7 +758,6 @@ def input_ssl():
 
 # ========== MAIN FUNCTION ==========
 def main():
-    clear_screen()
     show_banner()
     
     print(f"{CYAN}══════════════════════════════════════════════════════════════════════════════{RESET}")
