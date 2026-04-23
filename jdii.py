@@ -752,7 +752,7 @@ def main():
     show_banner()
     
     print(f"{CYAN}══════════════════════════════════════════════════════════════════════════════{RESET}")
-    print(f"{GREEN}{BOLD}                    JDII - JUST DO IT IDIOT - INTERACTIVE EDITION{RESET}")
+    print(f"{GREEN}{BOLD}                    JDII - DDoSFP - FULL PACK EDITION{RESET}")
     print(f"{CYAN}══════════════════════════════════════════════════════════════════════════════{RESET}")
     
     # Input data
@@ -892,7 +892,7 @@ def main():
     print(f"{GREEN}    Duration: {elapsed} detik{RESET}")
     print(f"{GREEN}    Average rate: {total_requests/elapsed:.0f} req/s{RESET}")
     print(f"{GREEN}════════════════════════════════════════════════════════════════{RESET}")
-    print(f"\n{CYAN}JDII - Just Do It Idiot - ready to attcak!{RESET}")
+    print(f"\n{CYAN}DDoSFP - DDoSFullPack - ready to attcak!{RESET}")
 
 if __name__ == "__main__":
     try:
