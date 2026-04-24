@@ -752,7 +752,7 @@ def main():
     show_banner()
     
     print(f"{CYAN}══════════════════════════════════════════════════════════════════════════════{RESET}")
-    print(f"{GREEN}{BOLD}                    JDII - DDoSFP - FULL PACK EDITION{RESET}")
+    print(f"{GREEN}{BOLD}                    YKAZZZ - DDoSFP - FULL PACK EDITION{RESET}")
     print(f"{CYAN}══════════════════════════════════════════════════════════════════════════════{RESET}")
     
     # Input data
