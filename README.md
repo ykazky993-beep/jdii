@@ -7,7 +7,7 @@
 >=>   >=>  >=>   >=>   >=>  >=>  >=>    >=> >=>       >=>        
 >====>     >====>        >=>       >=>>=>   >=>       >=>        
 
-DDoSFP is a DDoS/DoS tool that has many modes according to your needs. JDII is currently in beta stage.
+DDoSFP is a DDoS/DoS tool that has many modes according to your needs. DDoSFP is currently in beta stage.
 Please excuse any shortcomings or unwanted errors (DDoSFP version 0.1.0-BETA)
 
 DDoSFP by ykazky993-beep
