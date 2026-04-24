@@ -84,36 +84,36 @@ USER_AGENTS = [
 # ========== MODE DESKRIPSI ==========
 MODES = {
     # Low & Slow
-    '1': {'name': 'slowloris', 'desc': '🐢 Slowloris - Ninja Mode', 'cat': 'Low & Slow'},
-    '2': {'name': 'slowread', 'desc': '🦥 Slowread - RAM Eater', 'cat': 'Low & Slow'},
-    '3': {'name': 'slowpost', 'desc': '🐌 Slowpost - Connection Killer', 'cat': 'Low & Slow'},
-    '4': {'name': '404', 'desc': '🦟 404 Flood - Log Flooder', 'cat': 'Low & Slow'},
+    '1': {'name': 'slowloris', 'desc': 'Slowloris - Ninja Mode', 'cat': 'Low & Slow'},
+    '2': {'name': 'slowread', 'desc': 'Slowread - RAM Eater', 'cat': 'Low & Slow'},
+    '3': {'name': 'slowpost', 'desc': 'Slowpost - Connection Killer', 'cat': 'Low & Slow'},
+    '4': {'name': '404', 'desc': '404 Flood - Log Flooder', 'cat': 'Low & Slow'},
     # Protocol
-    '5': {'name': 'tcpflood', 'desc': '📡 TCP Flood', 'cat': 'Protocol'},
-    '6': {'name': 'udpflood', 'desc': '📦 UDP Flood', 'cat': 'Protocol'},
+    '5': {'name': 'tcpflood', 'desc': 'TCP Flood', 'cat': 'Protocol'},
+    '6': {'name': 'udpflood', 'desc': 'UDP Flood', 'cat': 'Protocol'},
     # Web
-    '7': {'name': 'httpflood', 'desc': '🌐 HTTP Flood', 'cat': 'Web'},
-    '8': {'name': 'httpsflood', 'desc': '🔒 HTTPS Flood', 'cat': 'Web'},
-    '9': {'name': 'getflood', 'desc': '📤 GET Flood', 'cat': 'Web'},
-    '10': {'name': 'postflood', 'desc': '📥 POST Flood', 'cat': 'Web'},
-    '11': {'name': 'headflood', 'desc': '📋 HEAD Flood', 'cat': 'Web'},
+    '7': {'name': 'httpflood', 'desc': 'HTTP Flood', 'cat': 'Web'},
+    '8': {'name': 'httpsflood', 'desc': 'HTTPS Flood', 'cat': 'Web'},
+    '9': {'name': 'getflood', 'desc': 'GET Flood', 'cat': 'Web'},
+    '10': {'name': 'postflood', 'desc': 'POST Flood', 'cat': 'Web'},
+    '11': {'name': 'headflood', 'desc': 'HEAD Flood', 'cat': 'Web'},
     # CMS
-    '12': {'name': 'wpflood', 'desc': '📰 WordPress Flood', 'cat': 'CMS'},
-    '13': {'name': 'joomlaflood', 'desc': '📋 Joomla Flood', 'cat': 'CMS'},
-    '14': {'name': 'drupalflood', 'desc': '📁 Drupal Flood', 'cat': 'CMS'},
-    '15': {'name': 'phpflood', 'desc': '🐘 PHP Flood', 'cat': 'CMS'},
+    '12': {'name': 'wpflood', 'desc': 'WordPress Flood', 'cat': 'CMS'},
+    '13': {'name': 'joomlaflood', 'desc': 'Joomla Flood', 'cat': 'CMS'},
+    '14': {'name': 'drupalflood', 'desc': 'Drupal Flood', 'cat': 'CMS'},
+    '15': {'name': 'phpflood', 'desc': 'PHP Flood', 'cat': 'CMS'},
     # App Layer
-    '16': {'name': 'dnsflood', 'desc': '🌍 DNS Flood', 'cat': 'Application'},
-    '17': {'name': 'ntpflood', 'desc': '⏰ NTP Flood', 'cat': 'Application'},
-    '18': {'name': 'smtpflood', 'desc': '📧 SMTP Flood', 'cat': 'Application'},
-    '19': {'name': 'ftpflood', 'desc': '📁 FTP Flood', 'cat': 'Application'},
-    '20': {'name': 'sshflood', 'desc': '🔑 SSH Flood', 'cat': 'Application'},
-    '21': {'name': 'telnetflood', 'desc': '💻 Telnet Flood', 'cat': 'Application'},
+    '16': {'name': 'dnsflood', 'desc': 'DNS Flood', 'cat': 'Application'},
+    '17': {'name': 'ntpflood', 'desc': 'NTP Flood', 'cat': 'Application'},
+    '18': {'name': 'smtpflood', 'desc': 'SMTP Flood', 'cat': 'Application'},
+    '19': {'name': 'ftpflood', 'desc': 'FTP Flood', 'cat': 'Application'},
+    '20': {'name': 'sshflood', 'desc': 'SSH Flood', 'cat': 'Application'},
+    '21': {'name': 'telnetflood', 'desc': 'Telnet Flood', 'cat': 'Application'},
     # Special
-    '22': {'name': 'random', 'desc': '🎲 Random Mode - Pilih mode acak', 'cat': 'SPECIAL'},
-    '23': {'name': 'chaos', 'desc': '🌪️ Chaos Mode - Ganti mode tiap 30 detik', 'cat': 'SPECIAL'},
-    '24': {'name': 'combo', 'desc': '⚡ Combo Mode - Kombinasi 3 mode sekaligus', 'cat': 'SPECIAL'},
-    '25': {'name': 'idiot', 'desc': '🤪 Idiot Mode - Jalanin SEMUA mode bergantian', 'cat': 'SPECIAL'},
+    '22': {'name': 'random', 'desc': 'Random Mode - Pilih mode acak', 'cat': 'SPECIAL'},
+    '23': {'name': 'chaos', 'desc': 'Chaos Mode - Ganti mode tiap 30 detik', 'cat': 'SPECIAL'},
+    '24': {'name': 'combo', 'desc': 'Combo Mode - Kombinasi 3 mode sekaligus', 'cat': 'SPECIAL'},
+    '25': {'name': 'idiot', 'desc': 'Idiot Mode - Jalanin SEMUA mode bergantian', 'cat': 'SPECIAL'},
 }
 
 # ========== ATTACK CLASSES ==========
@@ -790,23 +790,23 @@ def main():
     if mode == 'random':
         all_modes = [m['name'] for m in MODES.values() if m['cat'] != 'SPECIAL']
         mode = random.choice(all_modes)
-        print(f"\n{YELLOW}🎲 Random Mode: {mode}{RESET}")
+        print(f"\n{YELLOW}Random Mode: {mode}{RESET}")
         modes_to_run = [mode]
     
     elif mode == 'chaos':
-        print(f"\n{YELLOW}🌪️ CHAOS MODE ACTIVE! auto change mode every 30 second{RESET}")
+        print(f"\n{YELLOW}CHAOS MODE ACTIVE! auto change mode every 30 second{RESET}")
         modes_to_run = ['chaos']
     
     elif mode == 'combo':
         all_modes = [m['name'] for m in MODES.values() if m['cat'] != 'SPECIAL']
         combo_modes = random.sample(all_modes, 3)
-        print(f"\n{PURPLE}⚡ COMBO MODE ACTIVE!{RESET}")
+        print(f"\n{PURPLE}COMBO MODE ACTIVE!{RESET}")
         for m in combo_modes:
             print(f"    • {m}")
         modes_to_run = combo_modes
     
     elif mode == 'idiot':
-        print(f"\n{RED}🤪 IDIOT MODE ACTIVE! All mode running alternate{RESET}")
+        print(f"\n{RED}IDIOT MODE ACTIVE! All mode running alternate{RESET}")
         all_modes = [m['name'] for m in MODES.values() if m['cat'] != 'SPECIAL']
         modes_to_run = all_modes.copy()
         random.shuffle(modes_to_run)
