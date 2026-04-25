@@ -793,8 +793,8 @@ def main():
     print(f"{CYAN}╚══════════════════════════════════════════════════════════════════════════════╝{RESET}")
 
     # confirm
-    blink(f"{RED}Attack now?{RESET}", 0.5, 100)
-    confirm = input(f"\n{RED}[?] Attack? (y/n) {RESET}➜ ").strip().lower()
+    blink(f"{RED}Attack now?{RESET}", 0.5, 5)
+    confirm = input(f"\n{RED}[?] Attack now? (y/n) {RESET}➜ ").strip().lower()
 
     if confirm != 'y':
         print(f"\n{YELLOW}[!] canceled{RESET}")
