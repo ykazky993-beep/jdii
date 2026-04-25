@@ -43,6 +43,19 @@ import ipaddress
 import getpass
 from datetime import datetime, timedelta
 
+def blink(text, delay=0.5, repeat=10):
+    for _ in range(repeat):
+        sys.stdout.write('\r' + text)
+        sys.stdout.flush()
+        time.sleep(delay)
+
+        sys.stdout.write('\r' + ' ' * len(text))
+        sys.stdout.flush()
+        time.sleep(delay)
+
+    sys.stdout.write('\r' + text + '\n')
+    sys.stdout.flush()
+
 os.system("clear")
 print(b)
 time.sleep(2)
@@ -59,13 +72,14 @@ def slow_print(text, delay=0.0001):
 def show_banner():
     banner = f"""
 {RED}{BOLD}
->====>     >====>                  >=>>=>   >=======> >======>   
->=>   >=>  >=>   >=>             >=>    >=> >=>       >=>    >=> 
->=>    >=> >=>    >=>    >=>      >=>       >=>       >=>    >=> 
->=>    >=> >=>    >=>  >=>  >=>     >=>     >=====>   >======>   
->=>    >=> >=>    >=> >=>    >=>       >=>  >=>       >=>        
->=>   >=>  >=>   >=>   >=>  >=>  >=>    >=> >=>       >=>        
->====>     >====>        >=>       >=>>=>   >=>       >=>        
+>====>     >====>                  >=>>=>   >=======> >======>   >====>  
+>=>   >=>  >=>   >=>             >=>    >=> >=>       >=>    >=> >=>   >=>
+>=>    >=> >=>    >=>    >=>      >=>       >=>       >=>    >=> >=>    >=>
+>=>    >=> >=>    >=>  >=>  >=>     >=>     >=====>   >======>   >=>    >=>
+>=>    >=> >=>    >=> >=>    >=>       >=>  >=>       >=>        >=>    >=>
+>=>   >=>  >=>   >=>   >=>  >=>  >=>    >=> >=>       >=>        >=>   >=>
+>====>     >====>        >=>       >=>>=>   >=>       >=>        >====>
+HYPERMODE        
                                                                  
 
 {RESET}
@@ -779,7 +793,7 @@ def main():
     print(f"{CYAN}╚══════════════════════════════════════════════════════════════════════════════╝{RESET}")
 
     # confirm
-    print(f"\n{RED}{KEDIP}Attack now?{RESET}")
+    blink(f"\n{RED}Attack now?{RESET}", 0,5, 100)
     confirm = input(f"\n{RED}[?] Attack? (y/n) {RESET}➜ ").strip().lower()
 
     if confirm != 'y':
