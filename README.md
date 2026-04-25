@@ -21,6 +21,8 @@ modifications or use a fairly good device. ⚠️modifying threads, rates, etc. 
 
 2 file (dfp.py & dfpd.py) now it's blocked you can unblock it with deleted the triple quotes in nano mode or editor mode
 
+>>⚠️⚠️THIS TOOLS SUPER DANGEROUS USE IT TO LOCALHOST OR FOR LEARNING CYBERSECURITY IN ISOLATED SERVER/WEB⚠️⚠️<<
+
 ## contact
 Gmail - ykazky993@gmail.com
 
