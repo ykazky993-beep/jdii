@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
-# ========== WARNA ==========
+"""
+# ==========color==========
 RED = '\033[91m'
 GREEN = '\033[92m'
 YELLOW = '\033[93m'
@@ -987,4 +988,5 @@ if __name__ == "__main__":
         print(f"\n\n{RED}[!] JDII terminated{RESET}")
     except Exception as e:
         print(f"\n{RED}[!] Error: {e}{RESET}")
+"""
 
