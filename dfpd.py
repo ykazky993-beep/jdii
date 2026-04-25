@@ -1,5 +1,8 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+
+print("BLOCKED!!!")
+
 """
 # ========== WARNA ==========
 RED = '\033[91m'
