@@ -550,7 +550,7 @@ def main():
     for t in threads_list:
         t.join(timeout=1)
 
-    print(f"\n{GREEN}[✓] Attack done!{RESET}")
+    print(f"\n{GREEN}[✓] Attack complete!{RESET}")
 
 
 if __name__ == "__main__":
