@@ -3,7 +3,7 @@
 
 print("BLOCKED!!!")
 
-r"""
+rf"""
 # ========== WARNA ==========
 RED = '\033[91m'
 GREEN = '\033[92m'
