@@ -32,22 +32,19 @@ in temux user this command
 >cd dfp
 >python3 attack.py
 
-[-h] -t TARGET [-p PORT]
-            -m {slowloris,slowread,slowpost,404,tcpflood,udpflood,httpflood,httpsflood,getflood,postflood,headflood,wpflood,joomlaflood,drupalflood,phpflood,dnsflood,ntpflood,smtpflood,ftpflood,sshflood,telnetflood}
-            [-th THREADS] [-d DURATION] [-r RATE] [-s]
-
+short instructions:
 options:
-  -h, --help  show this help message and exit
-  -t, --target TARGET Target IP or Domain
-  -p, --port PORT Port (default: 80)
-  -m, --mode {slowloris,slowread,slowpost,404,tcpflood,udpflood,httpflood,httpsflood,getflood,postflood,headflood,wpflood,joomlaflood,drupalflood,phpflood,dnsflood,ntpflood,smtpflood,ftpflood,sshflood,telnetflood} attack mode
+-h, --help  show help
+-t, --target Target IP/domain
+-p, --port Target port
+-m, --mode Select 1 mode 
+-th, --threads Threads (default: 100)
+-d, --duration Duration (default: 60)
+-r, --rate Rate 
+-s, --ssl Use HTTPS/SSL
 
-  -th, --threads THREADS
-   Number of threads (default: 100)
-  -d, --duration DURATION
-   Duration in seconds (default: 60)
-  -r, --rate RATE Rate limit per thread (0 = unlimited)
-  -s, --ssl Use HTTPS/SSL
+mode:
+slowloris,slowread,slowpost,404,tcpflood,udpflood,httpflood,httpsflood,getflood,postflood,headflood,wpflood,joomlaflood,drupalflood,phpflood,dnsflood,ntpflood,smtpflood,ftpflood,sshflood,telnetflood
 
 ## about this tool
 this tools still in beta stage So if there are bugs or something unwanted, please report it for further development.
